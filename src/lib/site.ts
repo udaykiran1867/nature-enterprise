@@ -1,7 +1,7 @@
 export const SITE = {
   name: "Nature Enterprises",
-  tagline: "Indian masalas & spices",
-  description: "Authentic Indian masalas and spices in pack sizes for every kitchen. Order easily on WhatsApp.",
+  tagline: "Made in Tulunad, Inspired by Tradition",
+  description: "Homemade masalas and spice powders from Tulunad that bring authentic taste to your everyday cooking. Order easily on WhatsApp.",
   // Placeholders until the owner provides verified details.
   phone: "[Business phone to be added]",
   email: "[Contact email to be added]",

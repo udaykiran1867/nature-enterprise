@@ -9,12 +9,9 @@ export function startingPrice(p: Product): number | null {
 }
 
 const UNIT_FACTOR: Record<string, number> = { g: 1, kg: 1000, ml: 1, l: 1000 };
-export const sortVariants = (variants: Variant[]) =>
-  [...variants].sort(
-    (a, b) =>
-      Number(a.pack_size) * (UNIT_FACTOR[a.unit.toLowerCase()] ?? 1) -
-      Number(b.pack_size) * (UNIT_FACTOR[b.unit.toLowerCase()] ?? 1)
-  );
+export const packSizeInBase = (v: { pack_size: number; unit: string }) => Number(v.pack_size) * (UNIT_FACTOR[v.unit.toLowerCase()] ?? 1);
+export const sortVariants = <T extends { pack_size: number; unit: string }>(variants: T[]) =>
+  [...variants].sort((a, b) => packSizeInBase(a) - packSizeInBase(b));
 
 export type SortKey = "name" | "price-asc" | "price-desc";
 export function sortProducts(products: Product[], sort: SortKey): Product[] {

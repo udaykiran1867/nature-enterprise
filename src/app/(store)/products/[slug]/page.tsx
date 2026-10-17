@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { Check } from "lucide-react";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductImage } from "@/components/products/ProductImage";
 import { VariantPicker } from "@/components/products/VariantPicker";
@@ -59,6 +60,11 @@ async function Detail({ params }: { params: Promise<{ slug: string }> }) {
             product={{ id: product.id, slug: product.slug, name: product.name, image_path: product.image_path }}
             variants={product.variants}
           />
+          <ul className="space-y-2 rounded-xl bg-sage/60 p-4 text-sm text-forest-dark">
+            <li className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-forest" aria-hidden /> No account needed to order</li>
+            <li className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-forest" aria-hidden /> Your order opens in WhatsApp, ready to send to us</li>
+            <li className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-forest" aria-hidden /> Final price and stock are confirmed at checkout</li>
+          </ul>
         </div>
       </div>
       {product.category && <Related productId={product.id} category={product.category.slug} />}

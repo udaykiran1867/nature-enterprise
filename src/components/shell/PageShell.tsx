@@ -2,7 +2,7 @@ export function PageShell({ title, children }: { title: string; children: React.
   return (
     <div className="container-page py-12 md:py-16">
       <h1 className="text-4xl md:text-5xl">{title}</h1>
-      <div className="mt-6 max-w-2xl space-y-4 text-muted-foreground">{children}</div>
+      <div className="mt-6 max-w-4xl space-y-4 text-muted-foreground">{children}</div>
     </div>
   );
 }
