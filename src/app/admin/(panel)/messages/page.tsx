@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth";
 import { formatDateTime } from "@/lib/formatting";
 
 export const metadata: Metadata = { title: "Messages" };
+export const instant = false;
 const PAGE_SIZE = 20;
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;

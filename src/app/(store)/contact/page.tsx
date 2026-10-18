@@ -46,11 +46,11 @@ export default function ContactPage() {
     <>
       <PageBanner tall eyebrow="Get in touch" title="We'd Love to Hear from You"
         description="Have a question, feedback, or need assistance? We're here to help. Reach out to us and we'd be happy to connect with you." />
-      <div className="container-page grid gap-8 py-10 md:py-14 lg:grid-cols-[1.35fr_1fr]">
-        <section className="pattern-leaf relative h-fit overflow-hidden rounded-2xl border border-border p-6 sm:p-8">
+      <div className="container-page grid gap-8 py-8 sm:py-10 md:py-14 lg:grid-cols-[1.35fr_1fr]">
+        <section className="pattern-leaf relative h-fit overflow-hidden rounded-2xl border border-border p-5 sm:p-8">
           <div className="relative">
-            <h2 className="text-4xl">Send us a Message</h2>
-            <p className="mb-6 mt-1 text-muted-foreground">Fill out the form below and we&apos;ll get back to you as soon as possible.</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl">Send us a Message</h2>
+            <p className="mb-5 sm:mb-6 mt-1 text-sm text-muted-foreground">Fill out the form below and we&apos;ll get back to you as soon as possible.</p>
             <ContactForm />
           </div>
         </section>

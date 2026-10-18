@@ -1,38 +1,48 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { MessageCircle, Package, UserX } from "lucide-react";
+import { Allura } from "next/font/google";
+import { ArrowRight, Leaf, MessageCircle, Package, ShoppingCart, UserX } from "lucide-react";
 import { ProductGrid, ProductGridSkeleton } from "@/components/products/ProductGrid";
 import { SITE } from "@/lib/site";
 import { getProducts } from "@/services/products";
 
+const script = Allura({ subsets: ["latin"], weight: "400", display: "swap" });
+
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-forest text-ivory">
-      {SITE.heroImage && (
-        <>
-          <Image src={SITE.heroImage} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
-          <div className="absolute inset-0 -z-10 bg-forest-dark/70" />
-        </>
-      )}
-      <div className="grain absolute inset-0 -z-10 opacity-60" aria-hidden />
-      <div className="pointer-events-none absolute -right-32 -top-32 -z-10 size-[26rem] rounded-full border border-white/10" aria-hidden />
-      <div className="container-page py-14 md:py-24">
-        <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ivory/70"><span className="h-px w-8 bg-terracotta" />{SITE.tagline}</p>
-        <h1 className="max-w-2xl text-5xl leading-[1.05] !text-ivory md:text-7xl">Bring Home the Taste of Nature</h1>
-        <p className="mt-5 max-w-xl text-base text-ivory/85 md:text-lg">
+    <section className="relative isolate overflow-hidden bg-forest-dark text-ivory">
+      <Image src="/hero-spices.jpg" alt="" fill priority sizes="100vw" className="-z-30 object-cover object-[70%_center] md:object-center" />
+      <div className="absolute inset-0 -z-20 bg-gradient-to-r from-forest-dark/95 via-forest-dark/80 to-forest-dark/60 md:from-forest-dark/70 md:via-forest-dark/20 md:to-transparent" aria-hidden />
+      <div className="absolute inset-0 -z-20 bg-black/20 md:hidden" aria-hidden />
+
+      <div className="pointer-events-none absolute right-[4%] top-[12%] hidden size-36 items-center justify-center rounded-full border border-[#e8d9a8]/60 lg:flex" aria-hidden>
+        <div className="flex size-[8.4rem] flex-col items-center justify-center gap-1 rounded-full border border-[#e8d9a8]/40 text-center font-display text-[0.8rem] font-semibold uppercase leading-snug tracking-[0.18em] text-[#f1e6bd]">
+          <Leaf className="mb-1 size-6" />
+          <span>· Pure ·</span><span>Natural ·</span><span>Authentic</span>
+        </div>
+      </div>
+
+      <div className="container-page flex min-h-[26rem] flex-col justify-center py-12 sm:min-h-[32rem] sm:py-16 md:min-h-[38rem] md:py-24">
+        <p className="mb-4 inline-flex items-center gap-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] sm:tracking-[0.22em] text-ivory">
+          <Leaf className="size-4 sm:size-5 text-[#8bc34a]" /><span className="h-px w-8 sm:w-10 bg-[#8bc34a]" />{SITE.tagline}
+        </p>
+        <h1 className="max-w-2xl text-3xl xs:text-4xl sm:text-5xl md:text-7xl leading-[1.08] sm:leading-[1.05] !text-ivory drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
+          Bring Home the<br />Taste of{" "}
+          <span className={`${script.className} inline-block -rotate-2 text-[1.25em] font-normal leading-none text-[#7cc04a]`}>Nature</span>
+        </h1>
+        <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base leading-relaxed text-ivory/95 md:text-lg">
           Homemade masalas and spice powders from Tulunad, in pack sizes that suit your kitchen. Pick what you need and send your order straight to us on WhatsApp.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/products" className="btn btn-accent h-12 px-7 text-base">Explore Our Spices</Link>
-          <Link href="/products?featured=1" className="btn btn-light h-12 px-7 text-base">Shop Bestsellers</Link>
+        <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
+          <Link href="/products" className="inline-flex h-12 w-full sm:w-auto justify-center items-center gap-2 rounded-full bg-[#c4552b] px-7 text-sm sm:text-base font-semibold text-white shadow-lg shadow-black/30 transition hover:-translate-y-0.5 hover:bg-[#a94623]">
+            <Leaf className="size-4" />Explore Our Products<ArrowRight className="size-4" />
+          </Link>
         </div>
       </div>
     </section>
   );
 }
-
-
 
 async function Featured() {
   const products = await getProducts({ featured: true, limit: 8 });
@@ -54,10 +64,10 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section className="container-page pt-14 md:pt-20">
+      <section className="container-page pt-10 sm:pt-14 md:pt-20">
         <div className="flex items-end justify-between gap-4">
-          <div><p className="eyebrow">Handpicked</p><h2 className="text-4xl md:text-5xl">Featured products</h2></div>
-          <Link href="/products" className="text-sm font-medium text-forest underline-offset-4 hover:underline">View all</Link>
+          <div><p className="eyebrow">Handpicked</p><h2 className="text-3xl sm:text-4xl md:text-5xl">Featured products</h2></div>
+          <Link href="/products" className="text-sm font-medium text-forest underline-offset-4 hover:underline shrink-0">View all</Link>
         </div>
         <div className="mt-6">
           <Suspense fallback={<ProductGridSkeleton count={4} />}>
@@ -66,12 +76,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="container-page pt-14 md:pt-20" aria-labelledby="how-heading">
+      <section className="container-page pt-12 sm:pt-14 md:pt-20" aria-labelledby="how-heading">
         <p className="eyebrow">Why order here</p>
-        <h2 id="how-heading" className="text-4xl md:text-5xl">Simple, direct ordering</h2>
-        <ul className="mt-6 grid gap-4 md:grid-cols-3">
+        <h2 id="how-heading" className="text-3xl sm:text-4xl md:text-5xl">Simple, direct ordering</h2>
+        <ul className="mt-6 grid gap-3.5 sm:gap-4 md:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="card flex gap-4 p-5">
+            <li key={title} className="card flex items-start gap-4 p-4 sm:p-5">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sage text-forest"><Icon className="size-5" aria-hidden /></span>
               <div><h3 className="font-sans text-base font-semibold text-foreground">{title}</h3><p className="mt-1 text-sm text-muted-foreground">{text}</p></div>
             </li>
@@ -79,19 +89,22 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="pattern-leaf mt-16 md:mt-24">
-        <div className="container-page grid items-center gap-10 py-16 md:grid-cols-2 md:py-20">
+      <section className="pattern-leaf mt-14 sm:mt-16 md:mt-24 overflow-hidden">
+        <div className="container-page grid items-center gap-8 py-12 sm:gap-10 sm:py-16 md:grid-cols-2 md:py-20">
           <div>
             <p className="eyebrow">Our story</p>
-            <h2 className="text-4xl md:text-5xl">Rooted in the flavours of Tulunad</h2>
-            <p className="mt-4 text-muted-foreground">We celebrate the rich flavours and culinary traditions of Tulunad with homemade masalas and spice powders that bring authentic taste to your everyday cooking, from traditional curries to chicken and fish dishes.</p>
-            <div className="mt-7 flex flex-wrap gap-3"><Link href="/about" className="btn btn-primary">Read our story</Link><Link href="/products" className="btn btn-outline">Browse the catalogue</Link></div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl">Rooted in the flavours of Tulunad</h2>
+            <p className="mt-3 sm:mt-4 text-sm sm:text-base text-muted-foreground">We celebrate the rich flavours and culinary traditions of Tulunad with homemade masalas and spice powders that bring authentic taste to your everyday cooking, from traditional curries to chicken and fish dishes.</p>
+            <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row gap-3">
+              <Link href="/about" className="btn btn-primary w-full sm:w-auto text-center">Read our story</Link>
+              <Link href="/products" className="btn btn-outline w-full sm:w-auto text-center">Browse the catalogue</Link>
+            </div>
           </div>
-          <div className="relative mx-auto w-full max-w-sm">
-            <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-2xl border-2 border-terracotta" aria-hidden />
-            <div className="relative rounded-2xl bg-forest p-8 text-ivory">
-              <p className="font-display text-3xl leading-snug !text-ivory">&ldquo;Made in Tulunad, Inspired by Tradition.&rdquo;</p>
-              <p className="mt-4 text-sm text-ivory/70">{SITE.name}</p>
+          <div className="relative mx-auto w-full max-w-sm px-2 sm:px-0">
+            <div className="absolute inset-0 translate-x-2 translate-y-2 sm:translate-x-3 sm:translate-y-3 rounded-2xl border-2 border-terracotta" aria-hidden />
+            <div className="relative rounded-2xl bg-forest p-6 sm:p-8 text-ivory">
+              <p className="font-display text-2xl sm:text-3xl leading-snug !text-ivory">&ldquo;Made in Tulunad, Inspired by Tradition.&rdquo;</p>
+              <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-ivory/70">{SITE.name}</p>
             </div>
           </div>
         </div>

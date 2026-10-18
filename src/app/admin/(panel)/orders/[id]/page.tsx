@@ -9,6 +9,7 @@ import { formatDateTime, formatINR } from "@/lib/formatting";
 import { STATUS_BADGE, STATUS_LABEL, isOrderStatus, type OrderStatus } from "@/lib/orders";
 
 export const metadata: Metadata = { title: "Order" };
+export const instant = false;
 
 export default async function OrderDetailPage({ params }: PageProps<"/admin/orders/[id]">) {
   const { id } = await params;

@@ -19,26 +19,26 @@ export async function Footer() {
   return (
     <footer className="mt-20 bg-forest-dark text-ivory">
       <div className="container-page">
-        <div className="-translate-y-1/2 rounded-2xl bg-terracotta px-6 py-7 text-white shadow-lg md:flex md:items-center md:justify-between md:px-10">
+        <div className="-translate-y-1/2 rounded-2xl bg-terracotta px-5 py-6 sm:px-8 sm:py-7 text-white shadow-lg md:flex md:items-center md:justify-between md:px-10">
           <div>
-            <p className="font-display text-3xl !text-white">Ready to stock your kitchen?</p>
-            <p className="mt-1 text-white/85">Pick your spices and send the order straight to us on WhatsApp.</p>
+            <p className="font-display text-2xl sm:text-3xl !text-white">Ready to stock your kitchen?</p>
+            <p className="mt-1 text-sm sm:text-base text-white/85">Pick your spices and send the order straight to us on WhatsApp.</p>
           </div>
-          <Link href="/products" className="btn mt-4 bg-white text-terracotta-dark hover:bg-ivory md:mt-0">Shop all spices</Link>
+          <Link href="/products" className="btn mt-4 w-full sm:w-auto bg-white text-terracotta-dark hover:bg-ivory md:mt-0 font-semibold">Shop all spices</Link>
         </div>
       </div>
-      <div className="container-page grid gap-10 pb-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
-        <div className="space-y-4">
+      <div className="container-page grid grid-cols-2 gap-8 pb-12 sm:gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+        <div className="col-span-2 md:col-span-1 space-y-3 sm:space-y-4">
           <Logo light />
           <p className="max-w-xs text-sm text-ivory/75">{SITE.description}</p>
         </div>
-        <nav aria-label="Shop" className="space-y-2.5 text-sm">
+        <nav aria-label="Shop" className="col-span-1 space-y-2 sm:space-y-2.5 text-sm">
           <h2 className={h}>Shop</h2>
           <Link className={link} href="/products">All spices</Link>
           <Link className={link} href="/products?featured=1">Bestsellers</Link>
           <Link className={link} href="/cart">Cart</Link>
         </nav>
-        <nav aria-label="Company" className="space-y-2.5 text-sm">
+        <nav aria-label="Company" className="col-span-1 space-y-2 sm:space-y-2.5 text-sm">
           <h2 className={h}>Company</h2>
           <Link className={link} href="/about">About us</Link>
           <Link className={link} href="/contact">Contact</Link>
@@ -46,13 +46,13 @@ export async function Footer() {
           <Link className={link} href="/terms">Terms &amp; Conditions</Link>
           <Link className={link} href="/returns">Returns &amp; Cancellation</Link>
         </nav>
-        <div className="space-y-2.5 text-sm text-ivory/80">
+        <div className="col-span-2 md:col-span-1 space-y-2 sm:space-y-2.5 text-sm text-ivory/80">
           <h2 className={h}>Contact</h2>
           <p>{business.phone || SITE.phone}</p>
           <p>{business.email || SITE.email}</p>
           <p>{business.address || SITE.address}</p>
           {wa && (
-            <a className="mt-2 inline-flex items-center gap-2 rounded-lg border border-white/25 px-3 py-2 text-ivory hover:bg-white/10" href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer">
+            <a className="mt-3 inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-white/25 px-4 py-2.5 text-sm text-ivory hover:bg-white/10 transition-colors" href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="size-4" aria-hidden /> Chat on WhatsApp
             </a>
           )}

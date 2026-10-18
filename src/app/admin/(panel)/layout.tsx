@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { requireAdmin } from "@/lib/auth";
 
+export const instant = false;
+
 async function Gate({ children }: { children: React.ReactNode }) {
   const { user } = await requireAdmin(); // server-side authorisation for every admin page
   return <AdminShell email={user.email}>{children}</AdminShell>;

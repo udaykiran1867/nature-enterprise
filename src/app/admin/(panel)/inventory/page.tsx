@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { History, Search } from "lucide-react";
+import { History, Search, X } from "lucide-react";
 import { StockEditor } from "@/components/admin/StockEditor";
 import { Pagination } from "@/components/shell/Pagination";
 import { requireAdmin } from "@/lib/auth";
@@ -10,6 +10,7 @@ import { packSizeInBase } from "@/lib/products";
 import type { Variant } from "@/types";
 
 export const metadata: Metadata = { title: "Inventory" };
+export const instant = false;
 const PAGE_SIZE = 20;
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
 const BADGE: Record<StockState, [string, string]> = { in: ["badge-green", "In Stock"], low: ["badge-amber", "Low Stock"], out: ["badge-gray", "Out of Stock"] };
@@ -23,6 +24,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/admin/
   const q = one(sp.q).trim().toLowerCase().slice(0, 60);
   const status = one(sp.status);
   const wanted = Math.max(1, parseInt(one(sp.page)) || 1);
+  const hasFilters = Boolean(q || status);
 
   const [{ data }, { data: moves }] = await Promise.all([
     supabase.from("product_variants").select("id,pack_size,unit,sku,price,stock_quantity,low_stock_threshold,is_available,updated_at,product:products(name)"),
@@ -53,13 +55,25 @@ export default async function InventoryPage({ searchParams }: PageProps<"/admin/
         ))}
       </div>
 
-      <form role="search" className="card flex gap-3 p-3">
+      <form role="search" className="card flex flex-col gap-3 p-3 sm:flex-row">
         {status && <input type="hidden" name="status" value={status} />}
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
           <input name="q" defaultValue={q} placeholder="Search by product or SKU" aria-label="Search inventory" className="field pl-9" />
         </div>
-        <button className="btn btn-outline">Search</button>
+        <div className="flex items-center gap-2">
+          <button type="submit" className="btn btn-outline flex-1 sm:flex-initial">Search</button>
+          {hasFilters && (
+            <Link
+              href="/admin/inventory"
+              className="btn btn-outline flex-1 sm:flex-initial text-muted-foreground hover:text-destructive hover:border-destructive/40"
+              title="Remove all filters"
+            >
+              <X className="size-4" aria-hidden />
+              <span>Remove filter</span>
+            </Link>
+          )}
+        </div>
       </form>
 
       {view.length ? (
@@ -81,7 +95,19 @@ export default async function InventoryPage({ searchParams }: PageProps<"/admin/
             );
           })}
         </ul>
-      ) : <div className="card p-12 text-center text-muted-foreground">{all.length ? "No pack sizes match this filter." : "No products yet. Add a product to start tracking stock."}</div>}
+      ) : (
+        <div className="card p-12 text-center text-muted-foreground">
+          <p>{hasFilters ? "No pack sizes match this filter." : all.length ? "No pack sizes match this filter." : "No products yet. Add a product to start tracking stock."}</p>
+          {hasFilters && (
+            <div className="mt-4">
+              <Link href="/admin/inventory" className="btn btn-outline inline-flex items-center gap-2">
+                <X className="size-4" aria-hidden />
+                <span>Remove filter</span>
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
 
       <Pagination page={page} pages={pages} total={rows.length} pageSize={PAGE_SIZE} noun="pack sizes" hrefFor={link} />
 

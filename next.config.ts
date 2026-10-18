@@ -7,6 +7,7 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  allowedDevOrigins: ["192.168.1.2", "192.168.1.*", "localhost:3000"],
   images: {
     remotePatterns: supabaseHost ? [{ protocol: "https", hostname: supabaseHost }] : [],
   },

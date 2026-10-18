@@ -6,6 +6,7 @@ import { formatDate, formatINR } from "@/lib/formatting";
 import { STATUS_BADGE, STATUS_LABEL, isOrderStatus } from "@/lib/orders";
 
 export const metadata: Metadata = { title: "Overview" };
+export const instant = false;
 
 export default async function AdminOverview() {
   const { supabase } = await requireAdmin();

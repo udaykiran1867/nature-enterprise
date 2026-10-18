@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MessageCircle, Search } from "lucide-react";
+import { MessageCircle, Search, X } from "lucide-react";
 import { DeleteOrderButton } from "@/components/admin/DeleteOrderButton";
 import { ReleaseStaleButton } from "@/components/admin/ReleaseStaleButton";
 import { Pagination } from "@/components/shell/Pagination";
@@ -9,6 +9,7 @@ import { formatDate, formatINR } from "@/lib/formatting";
 import { ORDER_STATUSES, STATUS_BADGE, STATUS_LABEL, isOrderStatus } from "@/lib/orders";
 
 export const metadata: Metadata = { title: "Orders" };
+export const instant = false;
 const PAGE_SIZE = 25;
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -21,6 +22,7 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
   const from = DATE.test(one(sp.from)) ? one(sp.from) : "";
   const to = DATE.test(one(sp.to)) ? one(sp.to) : "";
   const wanted = Math.max(1, parseInt(one(sp.page)) || 1);
+  const hasFilters = Boolean(q || status || from || to);
 
   let query = supabase
     .from("orders")
@@ -62,8 +64,72 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
         </div>
         <input type="date" name="from" defaultValue={from} aria-label="From date" className="field" />
         <input type="date" name="to" defaultValue={to} aria-label="To date" className="field" />
-        <button className="btn btn-outline">Filter</button>
+        <div className="flex items-center gap-2">
+          <button type="submit" className="btn btn-outline flex-1 md:flex-initial">Filter</button>
+          {hasFilters && (
+            <Link
+              href="/admin/orders"
+              className="btn btn-outline flex-1 md:flex-initial text-muted-foreground hover:text-destructive hover:border-destructive/40"
+              title="Remove all filters"
+            >
+              <X className="size-4" aria-hidden />
+              <span>Remove filter</span>
+            </Link>
+          )}
+        </div>
       </form>
+
+      {hasFilters && (
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">Active filters:</span>
+          {status && (
+            <Link
+              href={`/admin/orders?${new URLSearchParams({ ...(q && { q }), ...(from && { from }), ...(to && { to }) })}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs hover:border-destructive hover:text-destructive transition-colors"
+              title="Remove status filter"
+            >
+              <span>Status: {STATUS_LABEL[status as keyof typeof STATUS_LABEL] ?? status}</span>
+              <X className="size-3" aria-hidden />
+            </Link>
+          )}
+          {q && (
+            <Link
+              href={`/admin/orders?${new URLSearchParams({ ...(status && { status }), ...(from && { from }), ...(to && { to }) })}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs hover:border-destructive hover:text-destructive transition-colors"
+              title="Remove search query"
+            >
+              <span>Search: &ldquo;{q}&rdquo;</span>
+              <X className="size-3" aria-hidden />
+            </Link>
+          )}
+          {from && (
+            <Link
+              href={`/admin/orders?${new URLSearchParams({ ...(status && { status }), ...(q && { q }), ...(to && { to }) })}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs hover:border-destructive hover:text-destructive transition-colors"
+              title="Remove start date"
+            >
+              <span>From: {from}</span>
+              <X className="size-3" aria-hidden />
+            </Link>
+          )}
+          {to && (
+            <Link
+              href={`/admin/orders?${new URLSearchParams({ ...(status && { status }), ...(q && { q }), ...(from && { from }) })}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs hover:border-destructive hover:text-destructive transition-colors"
+              title="Remove end date"
+            >
+              <span>To: {to}</span>
+              <X className="size-3" aria-hidden />
+            </Link>
+          )}
+          <Link
+            href="/admin/orders"
+            className="text-xs font-medium text-forest hover:text-forest-dark hover:underline ml-1"
+          >
+            Clear all
+          </Link>
+        </div>
+      )}
 
       {error ? <div className="card p-10 text-center text-destructive">Couldn&apos;t load orders. Please refresh.</div> : rows.length ? (
         <ul className="space-y-2">
@@ -86,7 +152,19 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
             );
           })}
         </ul>
-      ) : <div className="card p-12 text-center text-muted-foreground">{q || status || from || to ? "No orders match these filters." : "No orders yet. They'll appear here as customers submit them."}</div>}
+      ) : (
+        <div className="card p-12 text-center text-muted-foreground">
+          <p>{hasFilters ? "No orders match these filters." : "No orders yet. They'll appear here as customers submit them."}</p>
+          {hasFilters && (
+            <div className="mt-4">
+              <Link href="/admin/orders" className="btn btn-outline inline-flex items-center gap-2">
+                <X className="size-4" aria-hidden />
+                <span>Remove filter</span>
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
 
       <Pagination page={page} pages={pages} total={total} pageSize={PAGE_SIZE} noun="orders" hrefFor={hrefFor} />
     </div>

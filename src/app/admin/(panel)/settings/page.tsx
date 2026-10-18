@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import type { SettingsValues } from "@/schemas/settings";
 
 export const metadata: Metadata = { title: "Settings" };
+export const instant = false;
 
 export default async function SettingsPage() {
   const { supabase } = await requireAdmin();

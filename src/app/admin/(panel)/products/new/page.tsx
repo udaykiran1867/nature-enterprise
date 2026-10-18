@@ -3,6 +3,7 @@ import { ProductForm } from "@/components/admin/ProductForm";
 import { requireAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "New product" };
+export const instant = false;
 
 export default async function NewProductPage() {
   const { supabase } = await requireAdmin();

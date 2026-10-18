@@ -7,6 +7,7 @@ import type { ProductFormValues } from "@/schemas/product";
 import type { Variant } from "@/types";
 
 export const metadata: Metadata = { title: "Edit product" };
+export const instant = false;
 
 export default async function EditProductPage({ params }: PageProps<"/admin/products/[id]/edit">) {
   const { id } = await params;

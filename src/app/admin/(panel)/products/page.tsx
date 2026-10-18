@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { ProductRowActions } from "@/components/admin/ProductRowActions";
 import { Pagination } from "@/components/shell/Pagination";
 import { ProductImage } from "@/components/products/ProductImage";
 import { requireAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Products" };
+export const instant = false;
 const PAGE_SIZE = 15;
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
 
@@ -17,6 +18,7 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
   const status = one(sp.status);
   const category = /^[0-9a-f-]{36}$/.test(one(sp.category)) ? one(sp.category) : "";
   const page = Math.max(1, parseInt(one(sp.page)) || 1);
+  const hasFilters = Boolean(q || status || category);
 
   let query = supabase
     .from("products")
@@ -52,7 +54,19 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
         <select name="status" defaultValue={status} aria-label="Status" className="field md:w-40">
           <option value="">Any status</option><option value="published">Published</option><option value="draft">Draft</option>
         </select>
-        <button className="btn btn-outline">Filter</button>
+        <div className="flex items-center gap-2">
+          <button type="submit" className="btn btn-outline flex-1 md:flex-initial">Filter</button>
+          {hasFilters && (
+            <Link
+              href="/admin/products"
+              className="btn btn-outline flex-1 md:flex-initial text-muted-foreground hover:text-destructive hover:border-destructive/40"
+              title="Remove all filters"
+            >
+              <X className="size-4" aria-hidden />
+              <span>Remove filter</span>
+            </Link>
+          )}
+        </div>
       </form>
 
       {error ? (
@@ -79,8 +93,17 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
         </ul>
       ) : (
         <div className="card p-12 text-center">
-          <p className="font-medium">{q || status || category ? "No products match these filters." : "No products yet."}</p>
-          <Link href="/admin/products/new" className="btn btn-primary mt-4">Add your first product</Link>
+          <p className="font-medium text-muted-foreground">{hasFilters ? "No products match these filters." : "No products yet."}</p>
+          {hasFilters ? (
+            <div className="mt-4">
+              <Link href="/admin/products" className="btn btn-outline inline-flex items-center gap-2">
+                <X className="size-4" aria-hidden />
+                <span>Remove filter</span>
+              </Link>
+            </div>
+          ) : (
+            <Link href="/admin/products/new" className="btn btn-primary mt-4">Add your first product</Link>
+          )}
         </div>
       )}
 

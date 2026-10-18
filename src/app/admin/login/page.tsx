@@ -19,11 +19,11 @@ const FEATURES = [
 
 function BrandRow({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex items-center gap-4 ${className}`}>
-      <span className="inline-flex size-16 items-center justify-center rounded-2xl bg-white p-2 shadow-lg shadow-black/10">
+    <div className={`flex items-center gap-3 sm:gap-4 ${className}`}>
+      <span className="inline-flex size-12 sm:size-16 items-center justify-center rounded-xl sm:rounded-2xl bg-white p-1.5 sm:p-2 shadow-lg shadow-black/10">
         <LogoMark className="h-full w-auto" priority />
       </span>
-      <span className="font-sans text-xl font-semibold tracking-tight text-forest-dark">Nature Enterprises</span>
+      <span className="font-sans text-lg sm:text-xl font-semibold tracking-tight text-forest-dark">Nature Enterprises</span>
     </div>
   );
 }
@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
         <Leaf className="pointer-events-none absolute -bottom-6 -right-6 hidden size-56 -rotate-[25deg] fill-forest/10 text-forest/20 lg:block" aria-hidden />
 
         <div className="relative w-full max-w-[26rem]">
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-white bg-white p-7 shadow-2xl shadow-forest/10 sm:p-9">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-white bg-white p-5 shadow-2xl shadow-forest/10 sm:p-9">
             <svg className="pointer-events-none absolute right-0 top-0 h-28 w-32" viewBox="0 0 128 112" aria-hidden>
               <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#3f8a5b" /><stop offset="1" stopColor="#1f5236" /></linearGradient></defs>
               <path d="M52 0H128V112C112 62 92 22 52 0Z" fill="url(#g1)" />
@@ -93,13 +93,13 @@ export default function AdminLoginPage() {
             </svg>
 
             <div className="relative">
-              <Sprout className="size-9 text-forest" aria-hidden />
-              <h2 className="mt-1 font-sans text-3xl font-bold tracking-tight text-forest-dark">Admin <span className="text-[#2f7a4d]">Sign In</span></h2>
-              <p className="mb-7 mt-2 text-[15px] leading-relaxed text-muted-foreground">Access your dashboard and manage your store with ease.</p>
+              <Sprout className="size-8 sm:size-9 text-forest" aria-hidden />
+              <h2 className="mt-1 font-sans text-2xl sm:text-3xl font-bold tracking-tight text-forest-dark">Admin <span className="text-[#2f7a4d]">Sign In</span></h2>
+              <p className="mb-5 sm:mb-7 mt-1.5 sm:mt-2 text-sm sm:text-[15px] leading-relaxed text-muted-foreground">Access your dashboard and manage your store with ease.</p>
               <LoginForm />
             </div>
           </div>
-          <Link href="/" className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-forest-dark/80 transition-colors hover:text-forest">
+          <Link href="/" className="mt-5 sm:mt-6 flex items-center justify-center gap-2 text-sm font-medium text-forest-dark/80 transition-colors hover:text-forest">
             <ArrowLeft className="size-4" aria-hidden /> Back to store
           </Link>
         </div>

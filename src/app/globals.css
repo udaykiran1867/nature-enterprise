@@ -94,11 +94,16 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+    min-height: 100vh;
   }
 }
 
@@ -108,6 +113,7 @@
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--color-forest-dark);
+    text-wrap: balance;
   }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 }
