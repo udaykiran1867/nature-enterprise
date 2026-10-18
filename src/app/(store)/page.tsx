@@ -1,14 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowRight, MessageCircle, Package, UserX } from "lucide-react";
+import { MessageCircle, Package, UserX } from "lucide-react";
 import { ProductGrid, ProductGridSkeleton } from "@/components/products/ProductGrid";
-import { Skeleton } from "@/components/ui/skeleton";
 import { SITE } from "@/lib/site";
-import { getCategories, getProducts } from "@/services/products";
+import { getProducts } from "@/services/products";
 
 function Hero() {
-  const steps = ["Choose your spice and pack size", "Add to cart and enter your delivery details", "Send the ready-made order on WhatsApp"];
   return (
     <section className="relative isolate overflow-hidden bg-forest text-ivory">
       {SITE.heroImage && (
@@ -19,51 +17,22 @@ function Hero() {
       )}
       <div className="grain absolute inset-0 -z-10 opacity-60" aria-hidden />
       <div className="pointer-events-none absolute -right-32 -top-32 -z-10 size-[26rem] rounded-full border border-white/10" aria-hidden />
-      <div className="container-page grid items-center gap-10 py-14 md:grid-cols-[1.3fr_1fr] md:py-24">
-        <div>
-          <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ivory/70"><span className="h-px w-8 bg-terracotta" />{SITE.tagline}</p>
-          <h1 className="max-w-2xl text-5xl leading-[1.05] !text-ivory md:text-7xl">Bring Home the Taste of Nature</h1>
-          <p className="mt-5 max-w-xl text-base text-ivory/85 md:text-lg">
-            Homemade masalas and spice powders from Tulunad, in pack sizes that suit your kitchen. Pick what you need and send your order straight to us on WhatsApp.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/products" className="btn btn-accent h-12 px-7 text-base">Explore Our Spices</Link>
-            <Link href="/products?featured=1" className="btn btn-light h-12 px-7 text-base">Shop Bestsellers</Link>
-          </div>
+      <div className="container-page py-14 md:py-24">
+        <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ivory/70"><span className="h-px w-8 bg-terracotta" />{SITE.tagline}</p>
+        <h1 className="max-w-2xl text-5xl leading-[1.05] !text-ivory md:text-7xl">Bring Home the Taste of Nature</h1>
+        <p className="mt-5 max-w-xl text-base text-ivory/85 md:text-lg">
+          Homemade masalas and spice powders from Tulunad, in pack sizes that suit your kitchen. Pick what you need and send your order straight to us on WhatsApp.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href="/products" className="btn btn-accent h-12 px-7 text-base">Explore Our Spices</Link>
+          <Link href="/products?featured=1" className="btn btn-light h-12 px-7 text-base">Shop Bestsellers</Link>
         </div>
-        <ol className="rounded-2xl border border-white/15 bg-white/[0.07] p-6 md:p-7">
-          <li className="mb-4 font-display text-2xl">Ordering is simple</li>
-          {steps.map((t, i) => (
-            <li key={t} className="flex items-start gap-4 border-t border-white/10 py-4 first-of-type:border-0">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ivory font-display text-lg text-forest">{i + 1}</span>
-              <span className="pt-1 text-sm text-ivory/90">{t}</span>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );
 }
 
-async function Categories() {
-  const categories = await getCategories();
-  if (!categories.length) return null;
-  return (
-    <section className="container-page pt-14 md:pt-20">
-      <p className="eyebrow">Browse</p>
-      <h2 className="text-4xl md:text-5xl">Shop by category</h2>
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-        {categories.map((c) => (
-          <Link key={c.id} href={`/products?category=${c.slug}`}
-            className="group pattern-leaf relative flex min-h-36 flex-col justify-between overflow-hidden rounded-2xl border border-border p-5 transition-all duration-300 hover:-translate-y-1 hover:border-forest hover:shadow-lg hover:shadow-forest/10">
-            <span className="font-display text-6xl leading-none text-forest/25 transition-colors group-hover:text-terracotta/60" aria-hidden>{c.name.charAt(0)}</span>
-            <span className="flex items-center justify-between gap-2 font-semibold text-forest-dark">{c.name}<ArrowRight className="size-4 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden /></span>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
+
 
 async function Featured() {
   const products = await getProducts({ featured: true, limit: 8 });
@@ -84,9 +53,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Suspense fallback={<div className="container-page pt-12"><Skeleton className="h-24 w-full" /></div>}>
-        <Categories />
-      </Suspense>
 
       <section className="container-page pt-14 md:pt-20">
         <div className="flex items-end justify-between gap-4">
