@@ -28,11 +28,11 @@ function Hero() {
           <Leaf className="size-4 sm:size-5 text-[#8bc34a]" /><span className="h-px w-8 sm:w-10 bg-[#8bc34a]" />{SITE.tagline}
         </p>
         <h1 className="max-w-2xl text-3xl xs:text-4xl sm:text-5xl md:text-7xl leading-[1.08] sm:leading-[1.05] !text-ivory drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
-          Bring Home the<br />Taste of{" "}
-          <span className={`${script.className} inline-block -rotate-2 text-[1.25em] font-normal leading-none text-[#7cc04a]`}>Nature</span>
+          The Taste of <br />
+          <span className={`${script.className} inline-block -rotate-2 text-[1.25em] font-normal leading-none text-[#7cc04a]`}>Mother’s Hand</span>
         </h1>
         <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base leading-relaxed text-ivory/95 md:text-lg">
-          Homemade masalas and spice powders from Tulunad, in pack sizes that suit your kitchen. Pick what you need and send your order straight to us on WhatsApp.
+          A taste that takes you back home, to the warmth of family and the love in every meal.Made with love. Made to feel like home.
         </p>
         <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
           <Link href="/products" className="inline-flex h-12 w-full sm:w-auto justify-center items-center gap-2 rounded-full bg-[#c4552b] px-7 text-sm sm:text-base font-semibold text-white shadow-lg shadow-black/30 transition hover:-translate-y-0.5 hover:bg-[#a94623]">
