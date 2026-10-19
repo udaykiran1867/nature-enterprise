@@ -25,6 +25,7 @@ export const productSchema = z.object({
   image_alt: z.string().trim().max(160),
   is_active: z.boolean(),
   is_featured: z.boolean(),
+  how_to_use: z.string().trim().max(2000),
   seo_title: z.string().trim().max(70),
   seo_description: z.string().trim().max(170),
   variants: z.array(variantSchema).min(1, "Add at least one pack size").max(12),

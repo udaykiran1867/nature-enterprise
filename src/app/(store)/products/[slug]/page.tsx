@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { Check } from "lucide-react";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductImage } from "@/components/products/ProductImage";
+import { HowToUse } from "@/components/products/HowToUse";
 import { VariantPicker } from "@/components/products/VariantPicker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getProductBySlug, getProducts } from "@/services/products";
@@ -55,6 +56,7 @@ async function Detail({ params }: { params: Promise<{ slug: string }> }) {
           <h1 className="text-4xl md:text-5xl">{product.name}</h1>
           {product.description && <p className="text-muted-foreground">{product.description}</p>}
           <hr className="border-border" />
+          {product.how_to_use && <HowToUse value={product.how_to_use} />}
           <VariantPicker
             key={product.id}
             product={{ id: product.id, slug: product.slug, name: product.name, image_path: product.image_path }}

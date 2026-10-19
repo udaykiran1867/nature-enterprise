@@ -67,7 +67,7 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/orde
         </div>
 
         <div className="space-y-6">
-          <OrderStatusPanel orderId={o.id} status={status} whatsappReceived={o.whatsapp_handoff_status === "received"} />
+          <OrderStatusPanel orderId={o.id} orderNumber={o.order_number} customerName={o.customer_name} customerPhone={String(o.customer_phone)} status={status} whatsappReceived={o.whatsapp_handoff_status === "received"} />
           <section className="card p-5">
             <h2 className="text-2xl">Timeline</h2>
             <ol className="mt-4 space-y-4 border-l border-border pl-5 text-sm">

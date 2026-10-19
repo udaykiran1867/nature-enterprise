@@ -16,7 +16,7 @@ type Props = { categories: { id: string; name: string }[]; productId?: string; i
 
 const EMPTY_VARIANT = { pack_size: 100, unit: "g" as const, sku: "", price: 0, stock_quantity: 0, low_stock_threshold: 5, is_available: true };
 const EMPTY: ProductFormValues = {
-  name: "", slug: "", description: "", category_id: "", new_category: "", image_path: "", image_alt: "",
+  name: "", slug: "", description: "", how_to_use: "", category_id: "", new_category: "", image_path: "", image_alt: "",
   is_active: false, is_featured: false, seo_title: "", seo_description: "", variants: [EMPTY_VARIANT],
 };
 
@@ -83,6 +83,12 @@ export function ProductForm({ categories, productId, initial, defaultLowStock = 
             <Label htmlFor="description">Description</Label>
             <textarea id="description" rows={4} className="field h-auto py-2.5" {...register("description")} />
             <Err msg={errors.description?.message} />
+          </div>
+          <div>
+            <Label htmlFor="how_to_use">How to use <span className="font-normal text-muted-foreground">(optional)</span></Label>
+            <textarea id="how_to_use" rows={4} className="field h-auto py-2.5" placeholder="Usage tips, or paste a YouTube / Instagram link (one per line)" {...register("how_to_use")} />
+            <p className="mt-1 text-xs text-muted-foreground">Write text and/or paste links. Links open in a new tab for customers.</p>
+            <Err msg={errors.how_to_use?.message} />
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <div>

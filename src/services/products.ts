@@ -3,7 +3,7 @@ import { createPublicClient } from "@/lib/public";
 import type { Category, Product } from "@/types";
 
 const PRODUCT_SELECT =
-  "id,name,slug,description,image_path,image_alt,is_featured,category:categories(id,name,slug),variants:product_variants(id,pack_size,unit,price,stock_quantity,low_stock_threshold,is_available)";
+  "id,name,slug,description,how_to_use,image_path,image_alt,is_featured,category:categories(id,name,slug),variants:product_variants(id,pack_size,unit,price,stock_quantity,low_stock_threshold,is_available)";
 
 export async function getCategories(): Promise<Category[]> {
   "use cache";

@@ -17,6 +17,7 @@ export type Product = {
   description: string | null;
   image_path: string | null;
   image_alt: string | null;
+  how_to_use: string | null;
   is_featured: boolean;
   category: Pick<Category, "id" | "name" | "slug"> | null;
   variants: Variant[];

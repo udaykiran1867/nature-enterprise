@@ -20,7 +20,7 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
   if (!p) notFound();
 
   const initial: ProductFormValues = {
-    name: p.name, slug: p.slug, description: p.description ?? "", category_id: p.category_id ?? "", new_category: "",
+    name: p.name, slug: p.slug, description: p.description ?? "", how_to_use: (p as { how_to_use?: string | null }).how_to_use ?? "", category_id: p.category_id ?? "", new_category: "",
     image_path: p.image_path ?? "", image_alt: p.image_alt ?? "", is_active: p.is_active, is_featured: p.is_featured,
     seo_title: p.seo_title ?? "", seo_description: p.seo_description ?? "",
     variants: sortVariants(p.variants as unknown as Variant[]).map((v) => ({
