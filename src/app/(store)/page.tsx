@@ -24,14 +24,15 @@ function Hero() {
       </div>
 
       <div className="container-page flex min-h-[26rem] flex-col justify-center py-12 sm:min-h-[32rem] sm:py-16 md:min-h-[38rem] md:py-24">
+        <h1 className="max-w-2xl text-3xl xs:text-4xl sm:text-5xl md:text-7xl leading-[1.08] sm:leading-[1.05] !text-ivory drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
+          <span className={`${script.className} inline-block -rotate-2 text-[1.25em] font-normal leading-none text-[#7cc04a]`}>Nature Home Made Products</span>
+        </h1>
+        <br />
         <p className="mb-4 inline-flex items-center gap-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] sm:tracking-[0.22em] text-ivory">
           <Leaf className="size-4 sm:size-5 text-[#8bc34a]" /><span className="h-px w-8 sm:w-10 bg-[#8bc34a]" />{SITE.tagline}
         </p>
-        <h1 className="max-w-2xl text-3xl xs:text-4xl sm:text-5xl md:text-7xl leading-[1.08] sm:leading-[1.05] !text-ivory drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
-          The Taste of <br />
-          <span className={`${script.className} inline-block -rotate-2 text-[1.25em] font-normal leading-none text-[#7cc04a]`}>Mother’s Hand</span>
-        </h1>
         <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base leading-relaxed text-ivory/95 md:text-lg">
+          The taste of Mothers Hand.
           A taste that takes you back home, to the warmth of family and the love in every meal.Made with love. Made to feel like home.
         </p>
         <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
