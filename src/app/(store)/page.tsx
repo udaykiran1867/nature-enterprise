@@ -24,16 +24,16 @@ function Hero() {
       </div>
 
       <div className="container-page flex min-h-[26rem] flex-col justify-center py-12 sm:min-h-[32rem] sm:py-16 md:min-h-[38rem] md:py-24">
-        <h1 className="max-w-2xl text-3xl xs:text-4xl sm:text-5xl md:text-7xl leading-[1.08] sm:leading-[1.05] !text-ivory drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
-          <span className={`${script.className} inline-block -rotate-2 text-[1.25em] font-normal leading-none text-[#7cc04a]`}>Nature Home Made Products</span>
+        <h1 className={`${script.className} text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal leading-[1.05] sm:leading-[1.08] text-[#7cc04a] drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]`}>
+          <span className="block">Nature Home</span>
+          <span className="block">Made Products</span>
         </h1>
-        <br />
-        <p className="mb-4 inline-flex items-center gap-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] sm:tracking-[0.22em] text-ivory">
-          <Leaf className="size-4 sm:size-5 text-[#8bc34a]" /><span className="h-px w-8 sm:w-10 bg-[#8bc34a]" />{SITE.tagline}
+        <p className="mt-4 sm:mt-5 flex items-center gap-2.5 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] sm:tracking-[0.24em] text-ivory">
+          <Leaf className="size-4 sm:size-5 text-[#8bc34a] shrink-0" /><span className="h-px w-8 sm:w-10 bg-[#8bc34a] shrink-0" /><span>{SITE.tagline}</span>
         </p>
-        <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base leading-relaxed text-ivory/95 md:text-lg">
-          The taste of Mothers Hand.
-          A taste that takes you back home, to the warmth of family and the love in every meal.Made with love. Made to feel like home.
+        <p className="mt-4 sm:mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-ivory/95 md:text-lg">
+          The taste of Mother&apos;s Hand.
+          A taste that takes you back home, to the warmth of family and the love in every meal. Made with love. Made to feel like home.
         </p>
         <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
           <Link href="/products" className="inline-flex h-12 w-full sm:w-auto justify-center items-center gap-2 rounded-full bg-[#c4552b] px-7 text-sm sm:text-base font-semibold text-white shadow-lg shadow-black/30 transition hover:-translate-y-0.5 hover:bg-[#a94623]">

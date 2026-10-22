@@ -18,6 +18,7 @@ function MobileNavLinks() {
         return (
           <SheetClose
             key={l.href}
+            nativeButton={false}
             render={<Link href={l.href} />}
             className={`rounded-xl px-4 py-3 text-base font-medium transition-colors ${
               isActive
@@ -31,6 +32,7 @@ function MobileNavLinks() {
       })}
       <div className="my-2 border-t border-border/60" />
       <SheetClose
+        nativeButton={false}
         render={<Link href="/admin/login" />}
         className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-forest"
       >
@@ -47,6 +49,7 @@ function MobileNavLinksFallback() {
       {NAV.map((l) => (
         <SheetClose
           key={l.href}
+          nativeButton={false}
           render={<Link href={l.href} />}
           className="rounded-xl px-4 py-3 text-base font-medium text-forest-dark hover:bg-secondary"
         >
@@ -55,6 +58,7 @@ function MobileNavLinksFallback() {
       ))}
       <div className="my-2 border-t border-border/60" />
       <SheetClose
+        nativeButton={false}
         render={<Link href="/admin/login" />}
         className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-forest"
       >
