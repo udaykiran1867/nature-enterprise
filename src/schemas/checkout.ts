@@ -17,6 +17,7 @@ export const checkoutFormSchema = z.object({
   state: z.enum(INDIAN_STATES, { message: "Please select your state" }),
   postalCode: z.string().trim().regex(/^[1-9]\d{5}$/, "Enter a valid 6-digit PIN code"),
   notes: z.string().trim().max(300),
+  paymentMethod: z.enum(["cod", "upi"], { message: "Please choose a payment method" }),
 });
 export type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 

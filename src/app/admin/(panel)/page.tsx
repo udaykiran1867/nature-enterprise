@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, Boxes, ClipboardCheck, ClipboardList, Eye, Package, PackageX, Plus } from "lucide-react";
+import { AlertTriangle, ArrowRight, Boxes, ClipboardCheck, ClipboardList, Eye, Package, PackageX, Plus, Smartphone } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { formatDate, formatINR } from "@/lib/formatting";
 import { STATUS_BADGE, STATUS_LABEL, isOrderStatus } from "@/lib/orders";
@@ -19,6 +19,7 @@ export default async function AdminOverview() {
     supabase.from("orders").select("id,order_number,customer_name,total,order_status,created_at").order("created_at", { ascending: false }).limit(6),
   ]);
 
+  const upiWaiting = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("payment_method", "upi").eq("payment_status", "pending").neq("order_status", "cancelled");
   const p = products.data ?? [];
   const v = variants.data ?? [];
   const stats = [
@@ -39,6 +40,13 @@ export default async function AdminOverview() {
           <Link href="/admin/products/new" className="btn btn-primary"><Plus className="size-4" aria-hidden /> Add Product</Link>
         </div>
       </div>
+
+      {(upiWaiting.count ?? 0) > 0 && (
+        <Link href="/admin/orders?pay=verify&method=upi" className="flex items-center justify-between gap-4 rounded-xl border border-terracotta/30 bg-terracotta/5 px-5 py-3 text-sm transition-colors hover:bg-terracotta/10">
+          <span className="flex items-center gap-3"><Smartphone className="size-4 shrink-0 text-terracotta-dark" aria-hidden /><span><strong>{upiWaiting.count}</strong> UPI payment{upiWaiting.count === 1 ? "" : "s"} waiting to be verified</span></span>
+          <span className="inline-flex shrink-0 items-center gap-1 font-medium text-terracotta-dark">Review <ArrowRight className="size-3.5" aria-hidden /></span>
+        </Link>
+      )}
 
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         {stats.map(({ label, value, icon: Icon, href }) => (

@@ -45,3 +45,17 @@ export async function deleteOrder(orderId: string): Promise<R> {
   updateTag("products"); // reserved stock may have been returned
   return { ok: true };
 }
+
+export async function changePaymentStatus(orderId: string, status: string, reference: string): Promise<R> {
+  const admin = await getAdmin();
+  if (!admin) return { ok: false, error: "You are not authorised to do this." };
+  if (!idSchema.safeParse(orderId).success || !["pending", "paid", "refunded"].includes(status)) return { ok: false, error: "Invalid request." };
+  const { error } = await admin.supabase.rpc("admin_set_payment", { p_order_id: orderId, p_status: status, p_reference: reference.trim().slice(0, 80) });
+  if (error) {
+    if (error.message.includes("order_cancelled")) return { ok: false, error: "This order is cancelled, so it can't be marked as paid." };
+    if (error.message.includes("invalid_transition")) return { ok: false, error: "That payment change isn't allowed from the current payment status." };
+    if (error.message.includes("no_payment_method")) return { ok: false, error: "This order has no payment method recorded." };
+    return { ok: false, error: "Couldn't update the payment. Please try again." };
+  }
+  return { ok: true };
+}

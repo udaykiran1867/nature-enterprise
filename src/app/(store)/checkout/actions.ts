@@ -27,6 +27,7 @@ export async function submitOrder(raw: unknown): Promise<SubmitResult> {
     items: order.items.map((i) => ({ name: i.name, pack: i.pack, quantity: i.quantity, lineTotal: Number(i.line_total) })),
     subtotal: Number(order.subtotal), deliveryFee: Number(order.delivery_fee), total: Number(order.total),
     notes: c.notes,
+    paymentMethod: c.paymentMethod,
   });
   return { ok: true, orderNumber: order.order_number, token: order.access_token, whatsappUrl: buildWhatsAppUrl(waNumber, message), message };
 }

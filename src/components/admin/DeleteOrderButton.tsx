@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { deleteOrder } from "@/app/admin/(panel)/orders/actions";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-export function DeleteOrderButton({ id, number, redirectTo, labelled = false }: { id: string; number: string; redirectTo?: string; labelled?: boolean }) {
+export function DeleteOrderButton({ id, number, redirectTo, labelled = false, paid = false }: { id: string; number: string; redirectTo?: string; labelled?: boolean; paid?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, start] = useTransition();
@@ -32,6 +32,7 @@ export function DeleteOrderButton({ id, number, redirectTo, labelled = false }: 
             <DialogTitle>Delete order {number}?</DialogTitle>
             <DialogDescription>
               This permanently removes the order and its history. If it hasn&apos;t shipped yet, its reserved stock goes back to inventory. This can&apos;t be undone.
+              {paid && <strong className="mt-2 block text-terracotta-dark">This order is marked as paid. Make sure the payment is refunded or recorded elsewhere before deleting it.</strong>}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

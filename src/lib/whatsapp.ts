@@ -8,6 +8,7 @@ export type OrderMessageInput = {
   deliveryFee: number;
   total: number;
   notes?: string;
+  paymentMethod?: "cod" | "upi" | null;
 };
 
 /** Builds the readable order message. Pure function: safe to unit test. */
@@ -33,6 +34,8 @@ export function buildOrderMessage(o: OrderMessageInput): string {
     `Subtotal: ${formatINR(o.subtotal)}`,
     ...(o.deliveryFee > 0 ? [`Delivery Fee: ${formatINR(o.deliveryFee)}`] : []),
     `TOTAL: ${formatINR(o.total)}`,
+    ...(o.paymentMethod === "cod" ? ["", "Payment: Cash on Delivery"] : []),
+    ...(o.paymentMethod === "upi" ? ["", "Payment: UPI (I will send the payment screenshot or transaction ID here)"] : []),
     ...(o.notes ? ["", `Customer Notes: ${o.notes}`] : []),
     "",
     "Please confirm product availability and delivery details.",

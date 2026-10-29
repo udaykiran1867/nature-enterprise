@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { CheckCircle2, MessageCircle } from "lucide-react";
+import { Banknote, CheckCircle2, MessageCircle } from "lucide-react";
 import { CopyMessage } from "@/components/cart/CopyMessage";
+import { UpiPayment } from "@/components/cart/UpiPayment";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PAYMENT_METHOD_LABEL } from "@/lib/payments";
+import { getUpiAccount } from "@/services/payments";
 import { formatINR } from "@/lib/formatting";
 import { buildOrderMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
 import { getOrderForConfirmation } from "@/services/orders";
@@ -29,6 +32,7 @@ async function Confirmation({ searchParams }: { searchParams: Promise<Record<str
 
   const message = buildOrderMessage(order);
   const wa = await resolveWhatsAppNumber();
+  const upi = order.paymentMethod === "upi" && order.paymentStatus === "pending" ? await getUpiAccount() : null;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -53,6 +57,25 @@ async function Confirmation({ searchParams }: { searchParams: Promise<Record<str
         </div>
       </div>
 
+      {order.paymentMethod === "cod" && (
+        <div className="card flex items-start gap-4 p-5">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-sage text-forest"><Banknote className="size-5" aria-hidden /></span>
+          <div>
+            <h2 className="font-sans text-base font-semibold text-foreground">Cash on Delivery</h2>
+            <p className="mt-0.5 text-sm text-muted-foreground">Please keep <strong className="text-foreground">{formatINR(order.total)}</strong> ready to pay when your order arrives. We&apos;ll confirm the details with you on WhatsApp.</p>
+          </div>
+        </div>
+      )}
+      {order.paymentMethod === "upi" && order.paymentStatus === "paid" && (
+        <div className="card flex items-start gap-4 p-5">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-sage text-forest"><CheckCircle2 className="size-5" aria-hidden /></span>
+          <div><h2 className="font-sans text-base font-semibold text-foreground">Payment received</h2><p className="mt-0.5 text-sm text-muted-foreground">Thank you! Your UPI payment has been confirmed.</p></div>
+        </div>
+      )}
+      {order.paymentMethod === "upi" && order.paymentStatus === "pending" && (upi
+        ? <UpiPayment orderNumber={order.orderNumber} amount={order.total} upiId={upi.upiId} payeeName={upi.payeeName} whatsappNumber={wa} />
+        : <div className="card p-5 text-sm text-muted-foreground">We&apos;ll share the UPI payment details with you on WhatsApp shortly.</div>)}
+
       <div className="card p-5">
         <h2 className="text-2xl">Order summary</h2>
         <ul className="mt-3 divide-y divide-border text-sm">
@@ -67,6 +90,7 @@ async function Confirmation({ searchParams }: { searchParams: Promise<Record<str
           <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{formatINR(order.subtotal)}</dd></div>
           {order.deliveryFee > 0 && <div className="flex justify-between"><dt className="text-muted-foreground">Delivery</dt><dd>{formatINR(order.deliveryFee)}</dd></div>}
           <div className="flex justify-between text-base font-semibold text-forest"><dt>Total</dt><dd>{formatINR(order.total)}</dd></div>
+          {order.paymentMethod && <div className="flex justify-between pt-1"><dt className="text-muted-foreground">Payment</dt><dd>{PAYMENT_METHOD_LABEL[order.paymentMethod]}</dd></div>}
         </dl>
         <p className="mt-4 text-sm text-muted-foreground">Delivering to {order.customer.name}, {order.customer.city} {order.customer.postalCode}</p>
       </div>

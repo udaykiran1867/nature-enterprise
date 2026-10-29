@@ -2,12 +2,55 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { saveSettings } from "@/app/admin/(panel)/settings/actions";
 import { settingsSchema, type SettingsValues } from "@/schemas/settings";
+
+function Toggle({
+  title,
+  hint,
+  checked,
+  onChange,
+}: {
+  title: string;
+  hint: string;
+  checked: boolean;
+  onChange: (next: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-xl border p-4 text-left transition-all ${
+        checked
+          ? "border-forest bg-sage/35 shadow-xs"
+          : "border-border bg-card hover:bg-secondary/40"
+      }`}
+    >
+      <span className="min-w-0 flex-1">
+        <span className="block font-medium text-foreground">{title}</span>
+        <span className="mt-0.5 block text-sm text-muted-foreground">{hint}</span>
+      </span>
+      <span
+        aria-hidden="true"
+        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out ${
+          checked ? "bg-forest" : "bg-[#D2D9C8]"
+        }`}
+      >
+        <span
+          className={`inline-block size-5 rounded-full bg-white shadow transition-transform duration-200 ease-in-out ${
+            checked ? "translate-x-5.5" : "translate-x-0.5"
+          }`}
+        />
+      </span>
+    </button>
+  );
+}
 
 const Err = ({ msg }: { msg?: string }) => (msg ? <p role="alert" className="mt-1 text-sm text-destructive">{msg}</p> : null);
 const L = ({ htmlFor, children, hint }: { htmlFor: string; children: React.ReactNode; hint?: string }) => (
@@ -17,7 +60,20 @@ const L = ({ htmlFor, children, hint }: { htmlFor: string; children: React.React
 export function SettingsForm({ initial }: { initial: SettingsValues }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty }, reset } = useForm<SettingsValues>({ resolver: zodResolver(settingsSchema), defaultValues: initial });
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors, isSubmitting, isDirty },
+    reset,
+  } = useForm<SettingsValues>({
+    resolver: zodResolver(settingsSchema),
+    defaultValues: initial,
+  });
+
+  const codEnabled = useWatch({ control, name: "codEnabled" });
+  const upiEnabled = useWatch({ control, name: "upiEnabled" });
 
   async function onSubmit(v: SettingsValues) {
     setError(null);
@@ -43,6 +99,35 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
           <L htmlFor="whatsapp" hint="Orders open WhatsApp with this number. Leave empty to use the server setting.">WhatsApp business number</L>
           <input id="whatsapp" inputMode="numeric" placeholder="919876543210" className="field" {...register("whatsapp")} /><Err msg={errors.whatsapp?.message} />
         </div>
+      </section>
+
+      <section className="card space-y-5 p-5 sm:p-6">
+        <div><h2 className="text-2xl">Payments</h2><p className="text-sm text-muted-foreground">Choose how customers can pay. UPI payments are confirmed by you: check your bank or UPI app, then mark the order as paid.</p></div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <Toggle
+            title="Cash on Delivery"
+            hint="Customers pay in cash when the order arrives."
+            checked={Boolean(codEnabled)}
+            onChange={(next) => setValue("codEnabled", next, { shouldDirty: true, shouldValidate: true })}
+          />
+          <Toggle
+            title="UPI payments"
+            hint="Customers see a QR code and UPI link after ordering."
+            checked={Boolean(upiEnabled)}
+            onChange={(next) => setValue("upiEnabled", next, { shouldDirty: true, shouldValidate: true })}
+          />
+          <input type="checkbox" className="sr-only" {...register("codEnabled")} />
+          <input type="checkbox" className="sr-only" {...register("upiEnabled")} />
+        </div>
+        <Err msg={errors.codEnabled?.message} />
+        <div className={`grid gap-5 sm:grid-cols-2 transition-opacity ${upiEnabled ? "" : "opacity-60"}`}>
+          <div><L htmlFor="upiId" hint="Use the UPI ID linked to your business bank account.">UPI ID</L>
+            <input id="upiId" autoComplete="off" placeholder="yourname@bank" className="field" {...register("upiId")} /><Err msg={errors.upiId?.message} /></div>
+          <div><L htmlFor="upiPayeeName" hint="The name customers see when they pay.">Payee name</L>
+            <input id="upiPayeeName" maxLength={60} placeholder="Nature Enterprises" className="field" {...register("upiPayeeName")} /><Err msg={errors.upiPayeeName?.message} /></div>
+        </div>
+        <div className={`sm:max-w-sm transition-opacity ${codEnabled ? "" : "opacity-60"}`}><L htmlFor="codMaxAmount" hint="Orders above this amount must pay by UPI. Use 0 for no limit.">Maximum order for Cash on Delivery (₹)</L>
+          <input id="codMaxAmount" type="number" step="1" min={0} className="field" {...register("codMaxAmount", { valueAsNumber: true })} /><Err msg={errors.codMaxAmount?.message} /></div>
       </section>
 
       <section className="card space-y-5 p-5 sm:p-6">

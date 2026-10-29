@@ -5,7 +5,7 @@ import { Allura } from "next/font/google";
 import { ArrowRight, Leaf, MessageCircle, Package, ShoppingCart, UserX } from "lucide-react";
 import { ProductGrid, ProductGridSkeleton } from "@/components/products/ProductGrid";
 import { SITE } from "@/lib/site";
-import { getProducts } from "@/services/products";
+import { getProducts } from "@/services/products"; 
 
 const script = Allura({ subsets: ["latin"], weight: "400", display: "swap" });
 

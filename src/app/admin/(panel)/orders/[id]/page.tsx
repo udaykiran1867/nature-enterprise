@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { DeleteOrderButton } from "@/components/admin/DeleteOrderButton";
 import { OrderStatusPanel } from "@/components/admin/OrderStatusPanel";
+import { PaymentPanel } from "@/components/admin/PaymentPanel";
 import { requireAdmin } from "@/lib/auth";
 import { formatDateTime, formatINR } from "@/lib/formatting";
 import { STATUS_BADGE, STATUS_LABEL, isOrderStatus, type OrderStatus } from "@/lib/orders";
+import { PAYMENT_METHOD_LABEL, isPaymentMethod, isPaymentStatus, type PaymentMethod, type PaymentStatus } from "@/lib/payments";
 
 export const metadata: Metadata = { title: "Order" };
 export const instant = false;
@@ -24,13 +26,33 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/orde
   const items = o.items as { id: string; product_name_snapshot: string; pack_size_snapshot: string; unit_price: number; quantity: number; line_total: number }[];
   const followUp = `https://wa.me/91${String(o.customer_phone).replace(/\D/g, "").slice(-10)}?text=${encodeURIComponent(`Hello ${o.customer_name}, this is Nature Enterprises regarding your order ${o.order_number}.`)}`;
 
+  const rawMethod: unknown = o.payment_method;
+  const rawPay: unknown = o.payment_status;
+  const method: PaymentMethod | null = isPaymentMethod(rawMethod) ? rawMethod : null;
+  const payStatus: PaymentStatus = isPaymentStatus(rawPay) ? rawPay : "pending";
+  let reminderUrl: string | null = null;
+  if (method === "upi" && payStatus === "pending" && status !== "cancelled") {
+    const { data: acc } = await supabase.from("store_settings").select("value").eq("key", "upi_account").maybeSingle();
+    const upiId = String((acc?.value as { upi_id?: string } | null)?.upi_id ?? "");
+    if (upiId) {
+      const text = `Hello ${o.customer_name}, this is Nature Enterprises. A gentle reminder to complete the UPI payment of ${formatINR(Number(o.total))} for order ${o.order_number}.\nUPI ID: ${upiId}\nPlease send the payment screenshot or transaction ID here once done. Thank you!`;
+      reminderUrl = `https://wa.me/91${String(o.customer_phone).replace(/\D/g, "").slice(-10)}?text=${encodeURIComponent(text)}`;
+    }
+  }
+  const events = [
+    { key: "created", at: o.created_at as string, title: "Order saved", note: null as string | null, tone: "bg-forest" },
+    ...history.map((h) => ({ key: h.id, at: h.created_at, title: isOrderStatus(h.to_status) ? STATUS_LABEL[h.to_status] : h.to_status, note: h.note, tone: "bg-terracotta" })),
+    ...(o.paid_at ? [{ key: "paid", at: o.paid_at as string, title: "Payment received", note: o.payment_reference ? `Reference: ${o.payment_reference}` : null, tone: "bg-forest" }] : []),
+    ...(o.refunded_at ? [{ key: "refunded", at: o.refunded_at as string, title: "Payment refunded", note: null as string | null, tone: "bg-terracotta" }] : []),
+  ].sort((a, b) => a.at.localeCompare(b.at));
+
   return (
     <div className="space-y-6">
       <Link href="/admin/orders" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-forest"><ArrowLeft className="size-4" aria-hidden /> All orders</Link>
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-4xl">{o.order_number}</h1>
         <span className={`badge ${STATUS_BADGE[status]}`}>{STATUS_LABEL[status]}</span>
-        <div className="ml-auto"><DeleteOrderButton id={o.id} number={o.order_number} redirectTo="/admin/orders" labelled /></div>
+        <div className="ml-auto"><DeleteOrderButton id={o.id} number={o.order_number} redirectTo="/admin/orders" labelled paid={payStatus === "paid"} /></div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
@@ -62,21 +84,22 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/orde
               <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{formatINR(Number(o.subtotal))}</dd></div>
               <div className="flex justify-between"><dt className="text-muted-foreground">Delivery fee</dt><dd>{formatINR(Number(o.delivery_fee))}</dd></div>
               <div className="flex justify-between text-base font-semibold text-forest"><dt>Total</dt><dd>{formatINR(Number(o.total))}</dd></div>
+              {method && <div className="flex justify-between pt-1"><dt className="text-muted-foreground">Payment</dt><dd>{PAYMENT_METHOD_LABEL[method]}</dd></div>}
             </dl>
           </section>
         </div>
 
         <div className="space-y-6">
           <OrderStatusPanel orderId={o.id} orderNumber={o.order_number} customerName={o.customer_name} customerPhone={String(o.customer_phone)} status={status} whatsappReceived={o.whatsapp_handoff_status === "received"} />
+          <PaymentPanel orderId={o.id} method={method} status={payStatus} amount={Number(o.total)} reference={o.payment_reference ?? null} paidAt={o.paid_at ?? null} refundedAt={o.refunded_at ?? null} orderCancelled={status === "cancelled"} reminderUrl={reminderUrl} />
           <section className="card p-5">
             <h2 className="text-2xl">Timeline</h2>
             <ol className="mt-4 space-y-4 border-l border-border pl-5 text-sm">
-              <li className="relative"><span className="absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full bg-forest" aria-hidden /><p className="font-medium">Order saved</p><time className="text-muted-foreground" dateTime={o.created_at}>{formatDateTime(o.created_at)}</time></li>
-              {history.map((h) => (
-                <li key={h.id} className="relative"><span className="absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full bg-terracotta" aria-hidden />
-                  <p className="font-medium">{isOrderStatus(h.to_status) ? STATUS_LABEL[h.to_status] : h.to_status}</p>
-                  {h.note && <p className="text-muted-foreground">{h.note}</p>}
-                  <time className="text-muted-foreground" dateTime={h.created_at}>{formatDateTime(h.created_at)}</time></li>
+              {events.map((e) => (
+                <li key={e.key} className="relative"><span className={`absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full ${e.tone}`} aria-hidden />
+                  <p className="font-medium">{e.title}</p>
+                  {e.note && <p className="text-muted-foreground">{e.note}</p>}
+                  <time className="text-muted-foreground" dateTime={e.at}>{formatDateTime(e.at)}</time></li>
               ))}
             </ol>
           </section>

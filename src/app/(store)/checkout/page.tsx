@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CheckoutForm } from "@/components/cart/CheckoutForm";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getDeliveryFee } from "@/services/settings";
+import { getDeliveryFee, getPaymentOptions } from "@/services/settings";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
 
 async function Checkout() {
-  return <CheckoutForm deliveryFee={await getDeliveryFee()} />;
+  const [deliveryFee, payment] = await Promise.all([getDeliveryFee(), getPaymentOptions()]);
+  return <CheckoutForm deliveryFee={deliveryFee} payment={payment} />;
 }
 
 export default function CheckoutPage() {

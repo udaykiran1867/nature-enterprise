@@ -15,6 +15,8 @@ export async function saveSettings(raw: unknown): Promise<{ ok: true } | { ok: f
     { key: "delivery_fee", value: v.deliveryFee },
     { key: "low_stock_default", value: v.lowStockDefault },
     { key: "announcement", value: v.announcement },
+    { key: "payment_options", value: { cod_enabled: v.codEnabled, upi_enabled: v.upiEnabled, cod_max_amount: v.codMaxAmount } },
+    { key: "upi_account", value: { upi_id: v.upiId, payee_name: v.upiPayeeName } },
   ], { onConflict: "key" });
   if (error) return { ok: false, error: "Couldn't save settings. Please try again." };
   updateTag("settings");
