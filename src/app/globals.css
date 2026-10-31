@@ -127,12 +127,12 @@
 }
 
 @layer components {
-  .btn { @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50; }
-  .btn-primary { @apply bg-forest text-ivory hover:bg-forest-dark; }
-  .btn-accent { @apply bg-terracotta text-white hover:bg-terracotta-dark; }
-  .btn-outline { @apply border border-border bg-card text-foreground hover:bg-secondary; }
-  .btn-light { @apply border border-white/40 text-ivory hover:bg-white/10; }
-  .icon-btn { @apply relative inline-flex size-11 items-center justify-center rounded-lg text-forest-dark transition-colors hover:bg-secondary; }
+  .btn { @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-medium whitespace-nowrap transition-all duration-150 select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 cursor-pointer; }
+  .btn-primary { @apply bg-forest text-ivory shadow-xs hover:bg-forest-dark hover:shadow-md hover:shadow-forest/20 active:bg-forest-dark/95; }
+  .btn-accent { @apply bg-terracotta text-white shadow-xs hover:bg-terracotta-dark hover:shadow-md hover:shadow-terracotta/25 active:bg-[#7e3b27]; }
+  .btn-outline { @apply border border-border bg-card text-foreground hover:bg-secondary active:scale-[0.98]; }
+  .btn-light { @apply border border-white/40 text-ivory hover:bg-white/10 active:scale-[0.98]; }
+  .icon-btn { @apply relative inline-flex size-11 items-center justify-center rounded-lg text-forest-dark transition-all duration-150 hover:bg-secondary active:scale-95 cursor-pointer; }
   .field { @apply h-11 w-full rounded-lg border border-input bg-card px-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25; }
   .card { @apply rounded-xl border border-border bg-card; }
 }
