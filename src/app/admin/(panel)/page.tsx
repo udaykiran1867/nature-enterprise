@@ -11,11 +11,11 @@ export const instant = false;
 export default async function AdminOverview() {
   const { supabase } = await requireAdmin();
   const count = (s: string) => supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", s);
-  const [products, variants, fresh, awaiting, recent] = await Promise.all([
+  const [products, variants, fresh, payment, recent] = await Promise.all([
     supabase.from("products").select("id,is_active"),
     supabase.from("product_variants").select("stock_quantity,low_stock_threshold"),
     count("submitted"),
-    count("awaiting_confirmation"),
+    count("payment"),
     supabase.from("orders").select("id,order_number,customer_name,total,order_status,created_at").order("created_at", { ascending: false }).limit(6),
   ]);
 
@@ -27,7 +27,7 @@ export default async function AdminOverview() {
     { label: "Low-stock sizes", value: v.filter((x) => x.stock_quantity > 0 && x.stock_quantity <= x.low_stock_threshold).length, icon: AlertTriangle, href: "/admin/inventory?status=low" },
     { label: "Out-of-stock sizes", value: v.filter((x) => x.stock_quantity === 0).length, icon: PackageX, href: "/admin/inventory?status=out" },
     { label: "New orders", value: fresh.count ?? 0, icon: ClipboardList, href: "/admin/orders?status=submitted" },
-    { label: "Awaiting confirmation", value: awaiting.count ?? 0, icon: ClipboardCheck, href: "/admin/orders?status=awaiting_confirmation" },
+    { label: "Awaiting payment", value: payment.count ?? 0, icon: ClipboardCheck, href: "/admin/orders?status=payment" },
   ];
 
   return (

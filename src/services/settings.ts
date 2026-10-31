@@ -2,7 +2,8 @@ import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "@/lib/public";
 
 export type BusinessInfo = { phone: string; email: string; address: string; whatsapp: string };
-export type PublicSettings = { deliveryFee: number; announcement: string; business: BusinessInfo };
+export type PaymentInfo = { payeeName: string; qrImage: string };
+export type PublicSettings = { deliveryFee: number; announcement: string; business: BusinessInfo; payment: PaymentInfo };
 
 const EMPTY_BUSINESS: BusinessInfo = { phone: "", email: "", address: "", whatsapp: "" };
 
@@ -14,10 +15,15 @@ export async function getPublicSettings(): Promise<PublicSettings> {
   const map = new Map((data ?? []).map((r) => [r.key as string, r.value as unknown]));
   const fee = Number(map.get("delivery_fee") ?? 0);
   const biz = (map.get("business") ?? {}) as Partial<BusinessInfo>;
+  const pay = (map.get("payment") ?? {}) as Partial<PaymentInfo>;
   return {
     deliveryFee: Number.isFinite(fee) && fee > 0 ? fee : 0,
     announcement: typeof map.get("announcement") === "string" ? (map.get("announcement") as string) : "",
     business: { ...EMPTY_BUSINESS, ...biz },
+    payment: {
+      payeeName: typeof pay.payeeName === "string" ? pay.payeeName.trim() : "",
+      qrImage: typeof pay.qrImage === "string" && pay.qrImage.startsWith("payment/") ? pay.qrImage : "",
+    },
   };
 }
 

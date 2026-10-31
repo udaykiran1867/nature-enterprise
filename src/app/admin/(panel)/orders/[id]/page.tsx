@@ -6,7 +6,7 @@ import { DeleteOrderButton } from "@/components/admin/DeleteOrderButton";
 import { OrderStatusPanel } from "@/components/admin/OrderStatusPanel";
 import { requireAdmin } from "@/lib/auth";
 import { formatDateTime, formatINR } from "@/lib/formatting";
-import { STATUS_BADGE, STATUS_LABEL, isOrderStatus, type OrderStatus } from "@/lib/orders";
+import { STATUS_BADGE, STATUS_LABEL, isOrderStatus, statusLabelOf, type OrderStatus } from "@/lib/orders";
 
 export const metadata: Metadata = { title: "Order" };
 export const instant = false;
@@ -17,6 +17,9 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/orde
   const { supabase } = await requireAdmin();
   const { data: o } = await supabase.from("orders").select("*, items:order_items(*), history:order_status_history(*)").eq("id", id).maybeSingle();
   if (!o) notFound();
+  const { data: payRow } = await supabase.from("store_settings").select("value").eq("key", "payment").maybeSingle();
+  const pay = (payRow?.value ?? {}) as { qrImage?: string };
+  const paymentReady = Boolean(pay.qrImage);
 
   const raw: string = o.order_status;
   const status: OrderStatus = isOrderStatus(raw) ? raw : "submitted";
@@ -67,14 +70,14 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/orde
         </div>
 
         <div className="space-y-6">
-          <OrderStatusPanel orderId={o.id} orderNumber={o.order_number} customerName={o.customer_name} customerPhone={String(o.customer_phone)} status={status} whatsappReceived={o.whatsapp_handoff_status === "received"} />
+          <OrderStatusPanel orderId={o.id} orderNumber={o.order_number} customerName={o.customer_name} customerPhone={String(o.customer_phone)} paymentReady={paymentReady} status={status} whatsappReceived={o.whatsapp_handoff_status === "received"} />
           <section className="card p-5">
             <h2 className="text-2xl">Timeline</h2>
             <ol className="mt-4 space-y-4 border-l border-border pl-5 text-sm">
               <li className="relative"><span className="absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full bg-forest" aria-hidden /><p className="font-medium">Order saved</p><time className="text-muted-foreground" dateTime={o.created_at}>{formatDateTime(o.created_at)}</time></li>
               {history.map((h) => (
                 <li key={h.id} className="relative"><span className="absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full bg-terracotta" aria-hidden />
-                  <p className="font-medium">{isOrderStatus(h.to_status) ? STATUS_LABEL[h.to_status] : h.to_status}</p>
+                  <p className="font-medium">{statusLabelOf(h.to_status)}</p>
                   {h.note && <p className="text-muted-foreground">{h.note}</p>}
                   <time className="text-muted-foreground" dateTime={h.created_at}>{formatDateTime(h.created_at)}</time></li>
               ))}

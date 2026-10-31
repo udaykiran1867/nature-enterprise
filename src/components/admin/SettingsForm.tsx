@@ -2,11 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { saveSettings } from "@/app/admin/(panel)/settings/actions";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { settingsSchema, type SettingsValues } from "@/schemas/settings";
 
 const Err = ({ msg }: { msg?: string }) => (msg ? <p role="alert" className="mt-1 text-sm text-destructive">{msg}</p> : null);
@@ -17,7 +18,7 @@ const L = ({ htmlFor, children, hint }: { htmlFor: string; children: React.React
 export function SettingsForm({ initial }: { initial: SettingsValues }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty }, reset } = useForm<SettingsValues>({ resolver: zodResolver(settingsSchema), defaultValues: initial });
+  const { register, handleSubmit, control, formState: { errors, isSubmitting, isDirty }, reset } = useForm<SettingsValues>({ resolver: zodResolver(settingsSchema), defaultValues: initial });
 
   async function onSubmit(v: SettingsValues) {
     setError(null);
@@ -42,6 +43,24 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
         <div className="sm:max-w-sm">
           <L htmlFor="whatsapp" hint="Orders open WhatsApp with this number. Leave empty to use the server setting.">WhatsApp business number</L>
           <input id="whatsapp" inputMode="numeric" placeholder="919876543210" className="field" {...register("whatsapp")} /><Err msg={errors.whatsapp?.message} />
+        </div>
+      </section>
+
+      <section className="card space-y-5 p-5 sm:p-6">
+        <div>
+          <h2 className="text-2xl">Payment QR</h2>
+          <p className="text-sm text-muted-foreground">When an order is moved to <strong>Payment</strong>, the WhatsApp message includes a link to a page that says &ldquo;Pay now!&rdquo; and shows this QR code with the name below.</p>
+        </div>
+        <div className="sm:max-w-sm">
+          <L htmlFor="payeeName" hint="Shown under the QR code. Leave empty to show the shop name.">Name shown with the QR</L>
+          <input id="payeeName" maxLength={80} placeholder="Nature Enterprises" className="field" {...register("payeeName")} /><Err msg={errors.payeeName?.message} />
+        </div>
+        <div>
+          <L htmlFor="qr-image">QR code image</L>
+          <Controller control={control} name="qrImage" render={({ field }) => (
+            <ImageUploader value={field.value} onChange={field.onChange} folder="payment" alt="UPI QR code" inputId="qr-image" fit="contain" hint="Upload the QR screenshot or image (JPG, PNG or WebP, up to 5 MB). The whole image is shown to customers, uncropped." />
+          )} />
+          <Err msg={errors.qrImage?.message} />
         </div>
       </section>
 

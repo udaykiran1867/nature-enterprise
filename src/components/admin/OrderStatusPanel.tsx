@@ -8,7 +8,7 @@ import { changeOrderStatus, setWhatsAppReceived } from "@/app/admin/(panel)/orde
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NEXT_STATUSES, PROGRESS_STEPS, STATUS_BADGE, STATUS_LABEL, statusWhatsAppUrl, type OrderStatus } from "@/lib/orders";
 
-type Props = { orderId: string; orderNumber: string; customerName: string; customerPhone: string; status: OrderStatus; whatsappReceived: boolean };
+type Props = { orderId: string; orderNumber: string; customerName: string; customerPhone: string; paymentReady: boolean; status: OrderStatus; whatsappReceived: boolean };
 
 function Progress({ status }: { status: OrderStatus }) {
   if (status === "cancelled") return <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">This order was cancelled.</p>;
@@ -31,7 +31,7 @@ function Progress({ status }: { status: OrderStatus }) {
   );
 }
 
-export function OrderStatusPanel({ orderId, orderNumber, customerName, customerPhone, status, whatsappReceived }: Props) {
+export function OrderStatusPanel({ orderId, orderNumber, customerName, customerPhone, paymentReady, status, whatsappReceived }: Props) {
   const router = useRouter();
   const next = NEXT_STATUSES[status];
   const [picked, setPicked] = useState<string>("");
@@ -51,7 +51,7 @@ export function OrderStatusPanel({ orderId, orderNumber, customerName, customerP
     start(async () => {
       const res = await changeOrderStatus(orderId, to, note);
       if (!res.ok) { tab?.close(); toast.error(res.error); return; }
-      toast.success(`Order marked ${STATUS_LABEL[to].toLowerCase()}`);
+      toast.success(`Status updated to ${STATUS_LABEL[to]}`);
       setConfirmOpen(false);
       if (sendWhatsApp) {
         const url = statusWhatsAppUrl({ name: customerName, phone: customerPhone, orderNumber, status: to, note });
@@ -108,12 +108,18 @@ export function OrderStatusPanel({ orderId, orderNumber, customerName, customerP
       <Dialog open={confirmOpen} onOpenChange={(o) => !pending && setConfirmOpen(o)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Mark order {orderNumber} as {target ? STATUS_LABEL[target as OrderStatus].toLowerCase() : ""}?</DialogTitle>
+            <DialogTitle>Move order {orderNumber} to {target ? STATUS_LABEL[target as OrderStatus] : ""}?</DialogTitle>
             <DialogDescription>
               {hasPhone
                 ? `Do you want to send this status update to ${customerName} on WhatsApp? WhatsApp will open with the message ready, and you press Send.`
                 : "This order has no valid phone number, so a WhatsApp message can't be prepared."}
             </DialogDescription>
+            {target === "payment" && hasPhone && (
+              <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                This message sends the customer a link to the payment page (QR code) and asks them to send the payment screenshot. Once the screenshot arrives, move the order to Confirmed.
+                {!paymentReady && <span className="mt-1 block font-medium text-terracotta-dark">Your QR code isn&apos;t uploaded yet, so the payment page will be empty. Upload it in Admin &gt; Settings &gt; Payment QR first.</span>}
+              </p>
+            )}
           </DialogHeader>
           <DialogFooter>
             <button type="button" className="btn btn-outline" onClick={() => apply(false)} disabled={pending}>
