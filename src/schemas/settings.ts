@@ -8,6 +8,8 @@ export const settingsSchema = z.object({
   deliveryFee: z.number({ message: "Enter a number" }).min(0).max(5000),
   lowStockDefault: z.number({ message: "Enter a number" }).int("Whole numbers only").min(0).max(1000),
   announcement: z.string().trim().max(160),
+  // UPI ID used by the "Open UPI app" button, e.g. name@bank.
+  upiId: z.string().trim().regex(/^([A-Za-z0-9._-]{2,64}@[A-Za-z][A-Za-z0-9.]{1,63})?$/, "Enter a valid UPI ID, e.g. name@bank"),
   // Name shown under the QR code on the payment page. Empty = the shop name.
   payeeName: z.string().trim().max(80),
   // Storage path of the uploaded QR image (always under payment/), or empty.

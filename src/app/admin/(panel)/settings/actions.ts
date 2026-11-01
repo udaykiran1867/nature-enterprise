@@ -18,7 +18,7 @@ export async function saveSettings(raw: unknown): Promise<{ ok: true } | { ok: f
     { key: "delivery_fee", value: v.deliveryFee },
     { key: "low_stock_default", value: v.lowStockDefault },
     { key: "announcement", value: v.announcement },
-    { key: "payment", value: { payeeName: v.payeeName, qrImage: v.qrImage } },
+    { key: "payment", value: { payeeName: v.payeeName, upiId: v.upiId, qrImage: v.qrImage } },
   ], { onConflict: "key" });
   if (error) return { ok: false, error: "Couldn't save settings. Please try again." };
   // Delete the previous QR file once it is no longer used (best effort; never blocks the save).

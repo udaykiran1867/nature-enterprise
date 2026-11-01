@@ -11,13 +11,13 @@ export default async function SettingsPage() {
   const { data } = await supabase.from("store_settings").select("key,value");
   const m = new Map((data ?? []).map((r) => [r.key as string, r.value as unknown]));
   const biz = (m.get("business") ?? {}) as Partial<Record<"phone" | "email" | "address" | "whatsapp", string>>;
-  const pay = (m.get("payment") ?? {}) as Partial<Record<"payeeName" | "qrImage", string>>;
+  const pay = (m.get("payment") ?? {}) as Partial<Record<"payeeName" | "upiId" | "qrImage", string>>;
   const initial: SettingsValues = {
     phone: biz.phone ?? "", email: biz.email ?? "", address: biz.address ?? "", whatsapp: biz.whatsapp ?? "",
     deliveryFee: Number(m.get("delivery_fee") ?? 0) || 0,
     lowStockDefault: Number(m.get("low_stock_default") ?? 5) || 0,
     announcement: typeof m.get("announcement") === "string" ? (m.get("announcement") as string) : "",
-    payeeName: pay.payeeName ?? "", qrImage: pay.qrImage ?? "",
+    payeeName: pay.payeeName ?? "", upiId: pay.upiId ?? "", qrImage: pay.qrImage ?? "",
   };
   return (
     <div className="space-y-6">

@@ -49,11 +49,15 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
       <section className="card space-y-5 p-5 sm:p-6">
         <div>
           <h2 className="text-2xl">Payment QR</h2>
-          <p className="text-sm text-muted-foreground">When an order is moved to <strong>Payment</strong>, the WhatsApp message includes a link to a page that says &ldquo;Pay now!&rdquo; and shows this QR code with the name below.</p>
+          <p className="text-sm text-muted-foreground">When an order is moved to <strong>Payment</strong>, the WhatsApp message includes a link to a page that says &ldquo;Pay now!&rdquo; and shows this QR code with the name below, plus <strong>Download QR</strong> and <strong>Open UPI app</strong> buttons.</p>
         </div>
         <div className="sm:max-w-sm">
           <L htmlFor="payeeName" hint="Shown under the QR code. Leave empty to show the shop name.">Name shown with the QR</L>
           <input id="payeeName" maxLength={80} placeholder="Nature Enterprises" className="field" {...register("payeeName")} /><Err msg={errors.payeeName?.message} />
+        </div>
+        <div className="sm:max-w-sm">
+          <L htmlFor="upiId" hint="Used by the Open UPI app button, so the customer's PhonePe / Google Pay opens with your account already filled in.">UPI ID</L>
+          <input id="upiId" placeholder="name@bank" autoCapitalize="none" autoCorrect="off" spellCheck={false} className="field" {...register("upiId")} /><Err msg={errors.upiId?.message} />
         </div>
         <div>
           <L htmlFor="qr-image">QR code image</L>
